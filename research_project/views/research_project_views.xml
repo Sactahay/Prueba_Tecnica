@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_research_project_form" model="ir.ui.view">
+        <field name="name">research.project.form</field>
+        <field name="model">research.project</field>
+        <field name="arch" type="xml">
+            <form string="Proyecto de Investigación">
+                <header>
+                    <button name="action_en_progreso" states="nuevo,en_revision" string="Marcar en Progreso" type="object" class="oe_highlight"/>
+                    <button name="action_en_revision" states="en_progreso" string="Marcar en Revisión" type="object" class="oe_highlight"/>
+                    <button name="action_completado" states="en_revision" string="Marcar como Completado" type="object"/>
+                    <button name="action_cancelado" states="nuevo,en_progreso,en_revision" string="Cancelar Proyecto" type="object"/>
+                    <button name="action_nuevo" states="cancelado" string="Marcar como Nuevo" type="object"/>
+                    <field name="state" widget="statusbar" options="{'clickable': '0'}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code" readonly="1"/>
+                            <field name="priority" widget="priority"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="budget"/>
+                            <field name="progress" widget="progressbar"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción">
+                            <field name="description" placeholder="Ingrese la descripción detallada del proyecto..."/>
+                        </page>
+                        <page string="Investigadores">
+                            <group>
+                                <field name="leader_id"/>
+                                <field name="investigator_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_research_project_tree" model="ir.ui.view">
+        <field name="name">research.project.tree</field>
+        <field name="model">research.project</field>
+        <field name="arch" type="xml">
+            <tree string="Proyectos de Investigación" default_group_by="state">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="priority" widget="priority"/>
+                <field name="budget" sum="Total Presupuesto"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_research_project" model="ir.actions.act_window">
+        <field name="name">Proyectos de Investigación</field>
+        <field name="res_model">research.project</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Investigación" id="menu_research_root" sequence="10"/>
+    <menuitem name="Proyectos" id="menu_research_project" parent="menu_research_root" action="action_research_project" sequence="10"/>
+</odoo>
